@@ -107,4 +107,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Unit testing
+    testImplementation 'junit:junit:4.13.2'
 }

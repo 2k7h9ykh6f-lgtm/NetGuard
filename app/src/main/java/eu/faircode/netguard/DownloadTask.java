@@ -89,8 +89,7 @@ public class DownloadTask extends AsyncTask<Object, Integer, Object> {
 
             if (connection instanceof HttpURLConnection) {
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                    throw new IOException(httpConnection.getResponseCode() + " " + httpConnection.getResponseMessage());
+                Downloader.checkHttpResponse(httpConnection.getResponseCode(), httpConnection.getResponseMessage());
             }
 
             int contentLength = connection.getContentLength();
@@ -98,16 +97,7 @@ public class DownloadTask extends AsyncTask<Object, Integer, Object> {
             in = connection.getInputStream();
             out = new FileOutputStream(file);
 
-            long size = 0;
-            byte buffer[] = new byte[4096];
-            int bytes;
-            while (!isCancelled() && (bytes = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytes);
-
-                size += bytes;
-                if (contentLength > 0)
-                    publishProgress((int) (size * 100 / contentLength));
-            }
+            long size = Downloader.copyStream(in, out, contentLength, this::isCancelled, pct -> publishProgress(pct));
 
             Log.i(TAG, "Downloaded size=" + size);
             return null;

@@ -2040,10 +2040,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
     }
 
     private boolean isSupported(int protocol) {
-        return (protocol == 1 /* ICMPv4 */ ||
-                protocol == 58 /* ICMPv6 */ ||
-                protocol == 6 /* TCP */ ||
-                protocol == 17 /* UDP */);
+        return Packet.isSupportedProtocol(protocol);
     }
 
     // Called from native code

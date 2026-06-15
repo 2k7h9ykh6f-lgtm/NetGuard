@@ -35,6 +35,15 @@ public class Packet {
     public Packet() {
     }
 
+    // Protocols handled by the VPN (matches the native packet handler):
+    // ICMPv4 (1), ICMPv6 (58), TCP (6), UDP (17).
+    public static boolean isSupportedProtocol(int protocol) {
+        return (protocol == 1 /* ICMPv4 */ ||
+                protocol == 58 /* ICMPv6 */ ||
+                protocol == 6 /* TCP */ ||
+                protocol == 17 /* UDP */);
+    }
+
     @Override
     public String toString() {
         return "uid=" + uid + " v" + version + " p" + protocol + " " + daddr + "/" + dport;

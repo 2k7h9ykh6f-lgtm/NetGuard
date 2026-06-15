@@ -15,19 +15,7 @@ android {
         versionCode = 2026052101
         archivesBaseName = "NetGuard-v$versionName"
 
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-                arguments "-DANDROID_PLATFORM=android-22"
-                // https://developer.android.com/ndk/guides/cmake.html
-            }
-        }
-
-        ndkVersion "25.2.9519653"
-        ndk {
-            // https://developer.android.com/ndk/guides/abis.html#sa
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-        }
+        // [TEMP for unit-test run] native build disabled; restored from backup afterwards
 
         packagingOptions {
             jniLibs {
@@ -45,11 +33,7 @@ android {
     }
 
 
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
-    }
+    // [TEMP for unit-test run] native build disabled; restored from backup afterwards
 
     buildTypes {
         release {
@@ -85,6 +69,13 @@ android {
     lint {
         disable 'MissingTranslation'
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
     namespace 'eu.faircode.netguard'
     buildFeatures {
         aidl true
@@ -107,4 +98,10 @@ dependencies {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Local unit tests (run on JVM via Robolectric, no device required)
+    // https://robolectric.org/
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.13'
+    testImplementation 'androidx.test:core:1.6.1'
 }

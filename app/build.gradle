@@ -89,6 +89,21 @@ android {
     buildFeatures {
         aidl true
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            all {
+                maxHeapSize = "1024m"
+                forkEvery = 1
+                testLogging {
+                    events "passed", "skipped", "failed"
+                    showStandardStreams = true
+                    exceptionFormat = "full"
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -107,4 +122,9 @@ dependencies {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Test dependencies
+    testImplementation 'junit:junit:4.13.2'
+    // Pure Java SQLite for testing (avoids Robolectric native library issues on Windows)
+    testImplementation 'org.xerial:sqlite-jdbc:3.45.1.0'
 }

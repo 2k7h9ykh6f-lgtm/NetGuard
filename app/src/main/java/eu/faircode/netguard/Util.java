@@ -128,7 +128,8 @@ public class Util {
         try {
             System.loadLibrary("netguard");
         } catch (UnsatisfiedLinkError ignored) {
-            System.exit(1);
+            // Native library unavailable in unit-test environments;
+            // JNI methods will throw UnsatisfiedLinkError if invoked.
         }
     }
 

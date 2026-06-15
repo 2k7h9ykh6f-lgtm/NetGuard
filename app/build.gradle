@@ -85,6 +85,17 @@ android {
     lint {
         disable 'MissingTranslation'
     }
+    testOptions {
+        unitTests {
+            // Required so Robolectric can read merged resources (R.xml.predefined, R.string.*)
+            includeAndroidResources = true
+            returnDefaultValues = true
+            all {
+                // The Gradle daemon is pinned to -Xmx500m; give the forked test JVM its own heap
+                it.maxHeapSize = "2g"
+            }
+        }
+    }
     namespace 'eu.faircode.netguard'
     buildFeatures {
         aidl true
@@ -107,4 +118,9 @@ dependencies {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Unit testing (JVM) with Robolectric
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.test:core:1.6.1'
+    testImplementation 'org.robolectric:robolectric:4.13'
 }

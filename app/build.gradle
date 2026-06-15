@@ -82,6 +82,14 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    testOptions {
+        unitTests {
+            // Let android.util.Log (and other framework stubs) return defaults instead of throwing,
+            // so IPUtil's logging calls work in local JVM unit tests.
+            returnDefaultValues = true
+        }
+    }
+
     lint {
         disable 'MissingTranslation'
     }
@@ -107,4 +115,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Local JVM unit tests (src/test)
+    testImplementation 'junit:junit:4.13.2'
 }

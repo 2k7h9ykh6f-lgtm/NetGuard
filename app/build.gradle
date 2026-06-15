@@ -82,6 +82,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     lint {
         disable 'MissingTranslation'
     }
@@ -93,6 +97,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Unit testing
+    testImplementation 'junit:junit:4.13.2'
 
     // https://developer.android.com/jetpack/androidx/releases/
     implementation 'androidx.appcompat:appcompat:1.6.1'

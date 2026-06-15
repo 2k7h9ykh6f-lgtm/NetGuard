@@ -2,7 +2,14 @@ apply plugin: 'com.android.application'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+// Only load the release keystore when it is actually present. This lets tasks
+// that do not need signing (e.g. unit tests, ./gradlew test) configure on a
+// fresh checkout/CI without the keystore. Production builds are unaffected:
+// when keystore.properties exists, behavior is identical to before.
+def hasKeystore = keystorePropertiesFile.exists()
+if (hasKeystore) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
     compileSdkVersion = 35
@@ -37,10 +44,12 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+            if (hasKeystore) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
         }
     }
 
@@ -82,6 +91,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    testOptions {
+        // Local JVM unit tests run against android.jar stubs whose methods throw
+        // by default (e.g. android.util.Log). Returning default values lets pure
+        // logic classes such as IPUtil be tested without Robolectric or a device.
+        unitTests.returnDefaultValues = true
+    }
+
     lint {
         disable 'MissingTranslation'
     }
@@ -107,4 +123,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+    // Local JVM unit tests (src/test). https://junit.org/junit4/
+    testImplementation 'junit:junit:4.13.2'
 }
